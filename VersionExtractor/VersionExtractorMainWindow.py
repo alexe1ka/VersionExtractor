@@ -1,13 +1,12 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file '!MyGui.ui'
+# Form implementation generated from reading ui file 'gui.ui'
 #
 # Created by: PyQt5 UI code generator 5.6
 #
 # WARNING! All changes made in this file will be lost!
 
 from PyQt5 import QtCore, QtGui, QtWidgets
-
 
 class Ui_VersionExtractor_by_Alexe1ka(object):
     def setupUi(self, VersionExtractor_by_Alexe1ka):
@@ -88,11 +87,10 @@ class Ui_VersionExtractor_by_Alexe1ka(object):
         self.menubar.addAction(self.menuHelp.menuAction())
 
         self.retranslateUi(VersionExtractor_by_Alexe1ka)
+
+        self.openCatalogBtn.clicked.connect(self.currentCatalogFiles.show)
+
         QtCore.QMetaObject.connectSlotsByName(VersionExtractor_by_Alexe1ka)
-
-
-
-
 
     def retranslateUi(self, VersionExtractor_by_Alexe1ka):
         _translate = QtCore.QCoreApplication.translate
@@ -105,5 +103,3 @@ class Ui_VersionExtractor_by_Alexe1ka(object):
         self.menuMenu.setTitle(_translate("VersionExtractor_by_Alexe1ka", "Menu"))
         self.menuHelp.setTitle(_translate("VersionExtractor_by_Alexe1ka", "Help"))
 
-    def on_clicked(self):
-        print("current item clicked")

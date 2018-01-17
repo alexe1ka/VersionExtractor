@@ -214,5 +214,22 @@
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>openCatalogBtn</sender>
+   <signal>clicked()</signal>
+   <receiver>currentCatalogFiles</receiver>
+   <slot>show()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>137</x>
+     <y>532</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>401</x>
+     <y>267</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>

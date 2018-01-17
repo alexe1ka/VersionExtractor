@@ -1,10 +1,11 @@
 from PyQt5 import QtCore, uic, QtWidgets, QtGui
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
+from PyQt5.QtCore import pyqtSlot
 import VersionExtractorMainWindow
 
 
-class ExtractorWindow(QMainWindow, QTreeView):
+class ExtractorWindow(QMainWindow, QTreeView, ):
     def __init__(self, parent=None):
         QtWidgets.QWidget.__init__(self, parent)
         # uic.loadUi("gui.ui", self)
@@ -13,6 +14,7 @@ class ExtractorWindow(QMainWindow, QTreeView):
 
         model = QFileSystemModel()
         model.setFilter(QtCore.QDir.AllDirs | QtCore.QDir.NoDotAndDotDot)  # в treeView - только каталоги
+        # model.setFilter(QtCore.QDir.Files)  # фильтр на "только файлы"
         model.setRootPath(QtCore.QDir.currentPath())
         self.ui.catalogsTreeView.setModel(model)
 
@@ -20,6 +22,12 @@ class ExtractorWindow(QMainWindow, QTreeView):
         self.ui.catalogsTreeView.setColumnHidden(1, True)
         self.ui.catalogsTreeView.setColumnHidden(2, True)
         self.ui.catalogsTreeView.setColumnHidden(3, True)
+
+        # self.ui.openCatalogBtn.clicked(self.ui.catalogsTreeView.currentIndex())
+
+
+
+
 
         # index = self.ui.catalogsTreeView.selectedIndexes()
         # self.ui.currentCatalogFiles.conn
@@ -34,7 +42,6 @@ class ExtractorWindow(QMainWindow, QTreeView):
         # self.ui.currentFilesTreeView.setColumnHidden(1, True)
         # self.ui.currentFilesTreeView.setColumnHidden(2, True)
         # self.ui.currentFilesTreeView.setColumnHidden(3, True)
-
 
         # self.ui.currentCatalogFiles.setModel()
 
