@@ -8,6 +8,7 @@
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 
+
 class Ui_VersionExtractor_by_Alexe1ka(object):
     def setupUi(self, VersionExtractor_by_Alexe1ka):
         VersionExtractor_by_Alexe1ka.setObjectName("VersionExtractor_by_Alexe1ka")
@@ -89,6 +90,10 @@ class Ui_VersionExtractor_by_Alexe1ka(object):
         self.retranslateUi(VersionExtractor_by_Alexe1ka)
         QtCore.QMetaObject.connectSlotsByName(VersionExtractor_by_Alexe1ka)
 
+
+
+
+
     def retranslateUi(self, VersionExtractor_by_Alexe1ka):
         _translate = QtCore.QCoreApplication.translate
         VersionExtractor_by_Alexe1ka.setWindowTitle(_translate("VersionExtractor_by_Alexe1ka", "MainWindow"))
@@ -100,3 +105,5 @@ class Ui_VersionExtractor_by_Alexe1ka(object):
         self.menuMenu.setTitle(_translate("VersionExtractor_by_Alexe1ka", "Menu"))
         self.menuHelp.setTitle(_translate("VersionExtractor_by_Alexe1ka", "Help"))
 
+    def on_clicked(self):
+        print("current item clicked")

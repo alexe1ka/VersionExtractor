@@ -21,6 +21,20 @@ class ExtractorWindow(QMainWindow, QTreeView):
         self.ui.catalogsTreeView.setColumnHidden(2, True)
         self.ui.catalogsTreeView.setColumnHidden(3, True)
 
+        # index = self.ui.catalogsTreeView.selectedIndexes()
+        # self.ui.currentCatalogFiles.conn
+        # print(index)
+
+        # index = self.ui.catalogsTreeView.currentIndex()
+        # print(index)
+        # files_model = QFileSystemModel()
+        # files_model.data(index)
+        # files_model.setFilter(QtCore.QDir.Files ) #| QtCore.QDir.NoDotAndDotDot
+        # self.ui.currentFilesTreeView.setModel(files_model)
+        # self.ui.currentFilesTreeView.setColumnHidden(1, True)
+        # self.ui.currentFilesTreeView.setColumnHidden(2, True)
+        # self.ui.currentFilesTreeView.setColumnHidden(3, True)
+
 
         # self.ui.currentCatalogFiles.setModel()
 
