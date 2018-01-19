@@ -8,6 +8,7 @@
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 
+
 class Ui_version_extractor_by_alexe1ka(object):
     def setupUi(self, version_extractor_by_alexe1ka):
         version_extractor_by_alexe1ka.setObjectName("version_extractor_by_alexe1ka")
@@ -67,8 +68,7 @@ class Ui_version_extractor_by_alexe1ka(object):
         self.menubar.addAction(self.menuHelp.menuAction())
 
         self.retranslateUi(version_extractor_by_alexe1ka)
-        self.openCatalogButton.clicked.connect(self.currentCatalogFilesList.doItemsLayout)
-        QtCore.QMetaObject.connectSlotsByName(version_extractor_by_alexe1ka)
+
 
     def retranslateUi(self, version_extractor_by_alexe1ka):
         _translate = QtCore.QCoreApplication.translate

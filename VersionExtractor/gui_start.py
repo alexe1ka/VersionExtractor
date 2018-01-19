@@ -1,6 +1,5 @@
 import VersionExtractorMainWindow
-from PyQt5 import QtCore, uic, QtWidgets, QtGui
-from PyQt5.QtGui import *
+from PyQt5 import QtCore, QtWidgets
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import pyqtSlot
 
@@ -20,35 +19,36 @@ class ExtractorWindow(QMainWindow, QTreeView):
         # model.setFilter(QtCore.QDir.Files)  # фильтр на "только файлы"
         model.setRootPath(QtCore.QDir.currentPath())
         self.ui.catalogTreeView.setModel(model)
+
         # скрытие параметров директори
         self.ui.catalogTreeView.setColumnHidden(1, True)
         self.ui.catalogTreeView.setColumnHidden(2, True)
         self.ui.catalogTreeView.setColumnHidden(3, True)
 
-        # self.ui.openCatalogBtn.clicked(self.ui.catalogsTreeView.currentIndex())
+        # регистрация эвентов для кнопок
+        self.ui.openCatalogButton.clicked.connect(self.open_catalog_button_click)
+        self.ui.startSearchingButton.clicked.connect(self.start_search_hdl_button_click)
+        self.ui.generateReportButton.clicked.connect(self.generate_report_button_click)
+        index = QModelIndex
 
-        # index = self.ui.catalogsTreeView.selectedIndexes()
-        # self.ui.currentCatalogFiles.conn
-        # print(index)
+    @pyqtSlot()
+    def open_catalog_button_click(self):
+        current_index = self.ui.catalogTreeView.selectionModel().selectedIndexes()
+        print(current_index)
+        print("open catalog ")
 
-        # index = self.ui.catalogsTreeView.currentIndex()
-        # print(index)
-        # files_model = QFileSystemModel()
-        # files_model.data(index)
-        # files_model.setFilter(QtCore.QDir.Files ) #| QtCore.QDir.NoDotAndDotDot
-        # self.ui.currentFilesTreeView.setModel(files_model)
-        # self.ui.currentFilesTreeView.setColumnHidden(1, True)
-        # self.ui.currentFilesTreeView.setColumnHidden(2, True)
-        # self.ui.currentFilesTreeView.setColumnHidden(3, True)
+    @pyqtSlot()
+    def start_search_hdl_button_click(self):
+        # current_index = self.ui.catalogTreeView.
+        # print(current_index)
+        print("start search hdl files")
 
-        # self.ui.currentCatalogFiles.setModel()
+    @pyqtSlot()
+    def generate_report_button_click(self):
+        # current_index = self.ui.catalogTreeView.
+        # print(current_index)
+        print("generate report")
 
-
-# app = QtWidgets.QApplication(sys.argv)
-# window = QWidget()
-# window = uic.loadUi("gui.ui")
-# window.show()
-# sys.exit(app.exec_())
 
 if __name__ == "__main__":
     import sys
