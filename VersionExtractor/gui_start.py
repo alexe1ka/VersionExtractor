@@ -5,7 +5,10 @@ from PyQt5.QtCore import pyqtSlot
 import VersionExtractorMainWindow
 
 
-class ExtractorWindow(QMainWindow, QTreeView, ):
+# pyuic5 -x input.ui -o output.py
+
+
+class ExtractorWindow(QMainWindow, QTreeView):
     def __init__(self, parent=None):
         QtWidgets.QWidget.__init__(self, parent)
         # uic.loadUi("gui.ui", self)
@@ -16,12 +19,11 @@ class ExtractorWindow(QMainWindow, QTreeView, ):
         model.setFilter(QtCore.QDir.AllDirs | QtCore.QDir.NoDotAndDotDot)  # в treeView - только каталоги
         # model.setFilter(QtCore.QDir.Files)  # фильтр на "только файлы"
         model.setRootPath(QtCore.QDir.currentPath())
-        self.ui.catalogsTreeView.setModel(model)
-
+        self.ui.catalogTreeView.setModel(model)
         # скрытие параметров директори
-        self.ui.catalogsTreeView.setColumnHidden(1, True)
-        self.ui.catalogsTreeView.setColumnHidden(2, True)
-        self.ui.catalogsTreeView.setColumnHidden(3, True)
+        self.ui.catalogTreeView.setColumnHidden(1, True)
+        self.ui.catalogTreeView.setColumnHidden(2, True)
+        self.ui.catalogTreeView.setColumnHidden(3, True)
 
         # self.ui.openCatalogBtn.clicked(self.ui.catalogsTreeView.currentIndex())
 
