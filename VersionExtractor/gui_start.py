@@ -11,7 +11,7 @@ class ExtractorWindow(QMainWindow, QTreeView):
     def __init__(self, parent=None):
         QtWidgets.QWidget.__init__(self, parent)
         # uic.loadUi("gui.ui", self)
-        self.ui = VersionExtractorMainWindow.Ui_version_extractor_by_alexe1ka()  # устанавливаем в ui мой нарисованный интерфейс из qtDesigner'a,сгенерированный в python
+        self.ui = VersionExtractorMainWindow.Ui_version_extractor_by_alexe1ka()  # сгенерированный класс из Designer'a
         self.ui.setupUi(self)
 
         model = QFileSystemModel()
@@ -29,11 +29,12 @@ class ExtractorWindow(QMainWindow, QTreeView):
         self.ui.openCatalogButton.clicked.connect(self.open_catalog_button_click)
         self.ui.startSearchingButton.clicked.connect(self.start_search_hdl_button_click)
         self.ui.generateReportButton.clicked.connect(self.generate_report_button_click)
-        index = QModelIndex
+
+        self.ui.catalogTreeView.doubleClicked.connect(self.test)
 
     @pyqtSlot()
     def open_catalog_button_click(self):
-        current_index = self.ui.catalogTreeView.selectionModel().selectedIndexes()
+        current_index = self.ui.catalogTreeView.currentIndex()
         print(current_index)
         print("open catalog ")
 
@@ -48,6 +49,10 @@ class ExtractorWindow(QMainWindow, QTreeView):
         # current_index = self.ui.catalogTreeView.
         # print(current_index)
         print("generate report")
+
+    def test(self, signal):
+        file_path = self.ui.catalogTreeView.model().filePath(signal)
+        print(file_path)
 
 
 if __name__ == "__main__":
