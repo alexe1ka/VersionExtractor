@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>VersionExtractor_by_Alexe1ka</class>
- <widget class="QMainWindow" name="VersionExtractor_by_Alexe1ka">
+ <class>version_extractor_by_alexe1ka</class>
+ <widget class="QMainWindow" name="version_extractor_by_alexe1ka">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -13,10 +13,10 @@
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
-  <widget class="QWidget" name="centralwidget">
+  <widget class="QWidget" name="central_widget">
    <layout class="QHBoxLayout" name="horizontalLayout_2">
     <item>
-     <layout class="QVBoxLayout" name="leftCatalogView">
+     <layout class="QVBoxLayout" name="leftCatalogLayout">
       <item>
        <widget class="QTreeView" name="catalogTreeView"/>
       </item>
@@ -30,12 +30,12 @@
      </layout>
     </item>
     <item>
-     <layout class="QVBoxLayout" name="verticalLayout_6">
+     <layout class="QVBoxLayout" name="central_catalog_files_layout">
       <item>
        <widget class="QListView" name="currentCatalogFilesList"/>
       </item>
       <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_3">
+       <layout class="QHBoxLayout" name="central_button_layout">
         <item>
          <widget class="QComboBox" name="selectFileExtension">
           <item>
@@ -62,7 +62,7 @@
      </layout>
     </item>
     <item>
-     <layout class="QVBoxLayout" name="verticalLayout_7">
+     <layout class="QVBoxLayout" name="right_result_layoyt">
       <item>
        <widget class="QListView" name="foundHdlFilesListView"/>
       </item>
@@ -102,5 +102,22 @@
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>openCatalogButton</sender>
+   <signal>clicked()</signal>
+   <receiver>currentCatalogFilesList</receiver>
+   <slot>doItemsLayout()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>140</x>
+     <y>580</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>409</x>
+     <y>295</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>

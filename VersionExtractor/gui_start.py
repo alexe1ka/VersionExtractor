@@ -1,18 +1,18 @@
+import VersionExtractorMainWindow
 from PyQt5 import QtCore, uic, QtWidgets, QtGui
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import pyqtSlot
-import VersionExtractorMainWindow
 
 
-# pyuic5 -x input.ui -o output.py
+# pyuic5 input.ui -o output.py
 
 
 class ExtractorWindow(QMainWindow, QTreeView):
     def __init__(self, parent=None):
         QtWidgets.QWidget.__init__(self, parent)
         # uic.loadUi("gui.ui", self)
-        self.ui = VersionExtractorMainWindow.Ui_VersionExtractor_by_Alexe1ka()  # устанавливаем в ui мой нарисованный интерфейс из qtDesigner'a,сгенерированный в python
+        self.ui = VersionExtractorMainWindow.Ui_version_extractor_by_alexe1ka()  # устанавливаем в ui мой нарисованный интерфейс из qtDesigner'a,сгенерированный в python
         self.ui.setupUi(self)
 
         model = QFileSystemModel()
@@ -26,10 +26,6 @@ class ExtractorWindow(QMainWindow, QTreeView):
         self.ui.catalogTreeView.setColumnHidden(3, True)
 
         # self.ui.openCatalogBtn.clicked(self.ui.catalogsTreeView.currentIndex())
-
-
-
-
 
         # index = self.ui.catalogsTreeView.selectedIndexes()
         # self.ui.currentCatalogFiles.conn
