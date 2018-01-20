@@ -2,6 +2,9 @@ import VersionExtractorMainWindow
 from PyQt5 import QtCore, QtWidgets
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import pyqtSlot
+from PyQt5.QtGui import QStandardItemModel
+from PyQt5.QtGui import QStandardItem
+import os
 
 
 # pyuic5 input.ui -o output.py
@@ -30,7 +33,7 @@ class ExtractorWindow(QMainWindow, QTreeView):
         self.ui.startSearchingButton.clicked.connect(self.start_search_hdl_button_click)
         self.ui.generateReportButton.clicked.connect(self.generate_report_button_click)
 
-        self.ui.catalogTreeView.doubleClicked.connect(self.test)
+        self.ui.catalogTreeView.doubleClicked.connect(self.double_click_on_item_test)
 
     @pyqtSlot()
     def open_catalog_button_click(self):
@@ -50,8 +53,16 @@ class ExtractorWindow(QMainWindow, QTreeView):
         # print(current_index)
         print("generate report")
 
-    def test(self, signal):
+    def double_click_on_item_test(self, signal):
         file_path = self.ui.catalogTreeView.model().filePath(signal)
+        files = [f for f in os.listdir(file_path) if
+                 os.path.isfile(os.path.join(file_path, f))]  # список файлов в file_path
+        list_model = QStandardItemModel()
+        #TODO если диск пустой - вылетает
+        for f in files:
+            item = QStandardItem(f)
+            list_model.appendRow(item)
+        self.ui.currentCatalogFilesList.setModel(list_model)
         print(file_path)
 
 
