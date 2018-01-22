@@ -1,8 +1,6 @@
 import os
 import fnmatch
 
-test_path = '//MRS//Project_Quartet//КВАРТЕТ//Разработка//Блок 308-051-01 (СЦВМ)//ПО'
-
 
 def find(pattern, path):
     result = []
@@ -13,5 +11,12 @@ def find(pattern, path):
                 print(name)  # выводит имя файла
     return result
 
+def generate_report(hdl_file_list):
+    
 
-print(find("*.v", test_path))
+
+
+if __name__ == "__main__":
+
+    test_path = '//MRS//Project_Quartet//КВАРТЕТ//Разработка//Блок 308-051-01 (СЦВМ)//ПО'
+    print(find("*.v", test_path))

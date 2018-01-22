@@ -18,6 +18,8 @@ class ExtractorWindow(QMainWindow, QTreeView):
         self.ui = VersionExtractorMainWindow.Ui_version_extractor_by_alexe1ka()  # сгенерированный класс из Designer'a
         self.ui.setupUi(self)
 
+        self.file_path = ""
+
         model = QFileSystemModel()
         model.setFilter(QtCore.QDir.AllDirs | QtCore.QDir.NoDotAndDotDot)  # в treeView - только каталоги
         # model.setFilter(QtCore.QDir.Files)  # фильтр на "только файлы"
@@ -42,13 +44,14 @@ class ExtractorWindow(QMainWindow, QTreeView):
 
     @pyqtSlot()
     def start_search_hdl_button_click(self):
-        # current_index = self.ui.catalogTreeView.
-        # print(current_index)
-        pattern = self.ui.selectFileExtension.currentText()
-        print(pattern)
-        # catalog_parser.find(pattern)
-        
         print("start search hdl files")
+        pattern = self.ui.selectFileExtension.currentText()
+        hdl_file_list = catalog_parser.find(pattern, self.file_path)
+        hdl_list_model = QStandardItemModel()
+        for f in hdl_file_list:
+            item = QStandardItem(f)
+            hdl_list_model.appendRow(item)
+        self.ui.foundHdlFilesListView.setModel(hdl_list_model)
 
     @pyqtSlot()
     def generate_report_button_click(self):
@@ -57,16 +60,16 @@ class ExtractorWindow(QMainWindow, QTreeView):
         print("generate report")
 
     def double_click_on_item_test(self, signal):
-        file_path = self.ui.catalogTreeView.model().filePath(signal)
-        files = [f for f in os.listdir(file_path) if
-                 os.path.isfile(os.path.join(file_path, f))]  # список файлов в file_path
+        self.file_path = self.ui.catalogTreeView.model().filePath(signal)
+        files = [f for f in os.listdir(self.file_path) if
+                 os.path.isfile(os.path.join(self.file_path, f))]  # список файлов в file_path
         list_model = QStandardItemModel()
         # TODO если диск пустой - вылетает
         for f in files:
             item = QStandardItem(f)
             list_model.appendRow(item)
         self.ui.currentCatalogFilesList.setModel(list_model)
-        print(file_path)
+        print(self.file_path)
 
 
 if __name__ == "__main__":
