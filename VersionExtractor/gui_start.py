@@ -46,6 +46,10 @@ class ExtractorWindow(QMainWindow, QTreeView):
     def start_search_hdl_button_click(self):
         print("start search hdl files")
         pattern = self.ui.selectFileExtension.currentText()
+        # TODO паттерн для v AND vhd не работает
+        # if str(pattern) == "*.v/ *.vhd":
+        #     new_pattern = "*.v*d"
+        #     print("pattern for all hdl files: " + new_pattern)
         hdl_file_list = catalog_parser.find(pattern, self.file_path)
         hdl_list_model = QStandardItemModel()
         for f in hdl_file_list:
@@ -69,7 +73,7 @@ class ExtractorWindow(QMainWindow, QTreeView):
             item = QStandardItem(f)
             list_model.appendRow(item)
         self.ui.currentCatalogFilesList.setModel(list_model)
-        print(self.file_path)
+        # print(self.file_path)
 
 
 if __name__ == "__main__":
