@@ -8,7 +8,6 @@
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 
-
 class Ui_version_extractor_by_alexe1ka(object):
     def setupUi(self, version_extractor_by_alexe1ka):
         version_extractor_by_alexe1ka.setObjectName("version_extractor_by_alexe1ka")
@@ -35,6 +34,7 @@ class Ui_version_extractor_by_alexe1ka(object):
         self.central_button_layout.setObjectName("central_button_layout")
         self.selectFileExtension = QtWidgets.QComboBox(self.central_widget)
         self.selectFileExtension.setObjectName("selectFileExtension")
+        self.selectFileExtension.addItem("")
         self.selectFileExtension.addItem("")
         self.selectFileExtension.addItem("")
         self.central_button_layout.addWidget(self.selectFileExtension)
@@ -68,14 +68,15 @@ class Ui_version_extractor_by_alexe1ka(object):
         self.menubar.addAction(self.menuHelp.menuAction())
 
         self.retranslateUi(version_extractor_by_alexe1ka)
-
+        QtCore.QMetaObject.connectSlotsByName(version_extractor_by_alexe1ka)
 
     def retranslateUi(self, version_extractor_by_alexe1ka):
         _translate = QtCore.QCoreApplication.translate
         version_extractor_by_alexe1ka.setWindowTitle(_translate("version_extractor_by_alexe1ka", "MainWindow"))
         self.openCatalogButton.setText(_translate("version_extractor_by_alexe1ka", "Open catalog"))
-        self.selectFileExtension.setItemText(0, _translate("version_extractor_by_alexe1ka", ".v"))
-        self.selectFileExtension.setItemText(1, _translate("version_extractor_by_alexe1ka", ".vhdl"))
+        self.selectFileExtension.setItemText(0, _translate("version_extractor_by_alexe1ka", "*.v"))
+        self.selectFileExtension.setItemText(1, _translate("version_extractor_by_alexe1ka", "*.vhd"))
+        self.selectFileExtension.setItemText(2, _translate("version_extractor_by_alexe1ka", "*.v/ *.vhd"))
         self.startSearchingButton.setText(_translate("version_extractor_by_alexe1ka", "Search hdl files"))
         self.generateReportButton.setText(_translate("version_extractor_by_alexe1ka", "Generate report"))
         self.menuMenu.setTitle(_translate("version_extractor_by_alexe1ka", "Menu"))

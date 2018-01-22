@@ -5,6 +5,7 @@ from PyQt5.QtCore import pyqtSlot
 from PyQt5.QtGui import QStandardItemModel
 from PyQt5.QtGui import QStandardItem
 import os
+import catalog_parser
 
 
 # pyuic5 input.ui -o output.py
@@ -37,14 +38,16 @@ class ExtractorWindow(QMainWindow, QTreeView):
 
     @pyqtSlot()
     def open_catalog_button_click(self):
-        current_index = self.ui.catalogTreeView.currentIndex()
-        print(current_index)
         print("open catalog ")
 
     @pyqtSlot()
     def start_search_hdl_button_click(self):
         # current_index = self.ui.catalogTreeView.
         # print(current_index)
+        pattern = self.ui.selectFileExtension.currentText()
+        print(pattern)
+        # catalog_parser.find(pattern)
+        
         print("start search hdl files")
 
     @pyqtSlot()
@@ -58,7 +61,7 @@ class ExtractorWindow(QMainWindow, QTreeView):
         files = [f for f in os.listdir(file_path) if
                  os.path.isfile(os.path.join(file_path, f))]  # список файлов в file_path
         list_model = QStandardItemModel()
-        #TODO если диск пустой - вылетает
+        # TODO если диск пустой - вылетает
         for f in files:
             item = QStandardItem(f)
             list_model.appendRow(item)

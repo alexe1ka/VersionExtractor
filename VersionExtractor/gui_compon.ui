@@ -40,12 +40,17 @@
          <widget class="QComboBox" name="selectFileExtension">
           <item>
            <property name="text">
-            <string>.v</string>
+            <string>*.v</string>
            </property>
           </item>
           <item>
            <property name="text">
-            <string>.vhdl</string>
+            <string>*.vhd</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>*.v/ *.vhd</string>
            </property>
           </item>
          </widget>
