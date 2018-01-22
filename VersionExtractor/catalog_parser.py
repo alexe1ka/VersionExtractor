@@ -1,6 +1,7 @@
 import os
 import fnmatch
 import re
+import codecs
 
 
 def find(pattern, path):
@@ -23,19 +24,20 @@ def generate_report(hdl_file_list):
 # версию(version) ....
 # так же выводит список модулей в данном файле
 def file_parser(filepath):
-    file_list = []  # построчный лист с содержимым файла
+    list_of_file_data = []  # построчный лист с содержимым файла
     header_data = {"modules": []}
-    with open(filepath, "r") as file:  # открываем файл
+    # TODO решить проблему с кодировкой MACINTOSH https://docs.python.org/3/library/codecs.html
+    with open(filepath, "r", encoding="maccyrillic") as file:  # открываем файл
         print("filename: " + file.name)
         for line in file:
-            file_list.append(line)
+            list_of_file_data.append(line)
             if "Description" in line:
                 header_data["description"] = clean_string(line.split(":")[1])
 
             if "Version:" in line:
                 header_data["version"] = clean_string(line.split(":")[1])
 
-            if "Designer" in line:
+            if "Designer:" in line:
                 header_data["designer"] = clean_string(line.split(":")[1])
 
             if "module" in line and "endmodule" not in line:
@@ -54,9 +56,11 @@ def clean_string(dirty_string):
 
 
 if __name__ == "__main__":
-    test_dir_path = '//MRS//Project_Quartet//КВАРТЕТ//Разработка//Блок 308-051-01 (СЦВМ)//ПО'
+    # test_dir_path = '//MRS//Project_Quartet//КВАРТЕТ//Разработка//Блок 308-051-01 (СЦВМ)//ПО'
+    test_dir_path = 'D:\MyFiles\Projects\PyCharmProjects\VersionExtractor\VersionExtractor\!TEST_FOLDER\\v_new'
     # test_file_path = 'E:/addr_cntr.v'
     test_file_path = 'D:/addr_cntr.v'
     # test_file_path = 'D:/many_modules.v'
-    file_parser(test_file_path)
-    # print(find("*.v", test_dir_path))
+    file_list = find("*.v", test_dir_path)
+    for f in file_list:
+        file_parser(f)

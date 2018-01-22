@@ -63,7 +63,7 @@ class ExtractorWindow(QMainWindow, QTreeView):
     @pyqtSlot()
     def generate_report_button_click(self):
         report = []
-        #TODO вылетает
+        # TODO вылетает
         for file in self.hdl_files_list:
             report.append(catalog_parser.file_parser(file))
         # print("generate report")
