@@ -1,8 +1,6 @@
 import os
 import fnmatch
 import chardet
-import sys
-from chardet import UniversalDetector
 
 
 def find(pattern, path):
@@ -27,15 +25,12 @@ def generate_report(hdl_file_list):
 def file_parser(filepath):
     list_of_file_data = []  # построчный лист с содержимым файла
     header_data = {"modules": []}
-
     with open(filepath, "rb") as file:  # открываем файл maccyrillic
         print("filename: " + file.name)
         for line in file:
             # print(line)
             line = universal_decoder(line)
-
             list_of_file_data.append(line)
-
             if "Description" in line:
                 header_data["description"] = clean_string(line.split(":")[1])
 
@@ -45,15 +40,16 @@ def file_parser(filepath):
             if "Designer:" in line:
                 header_data["designer"] = clean_string(line.split(":")[1])
 
-            if "module " in line and "endmodule" not in line and line.lstrip(" ").startswith("m"):
-                # header_data["modules"] = line.split(" ")[1].split("(")[0]
-                header_data["modules"].append(line.split(" ")[1].split("(")[0])
+            # if "module " in line and "endmodule" not in line and line.lstrip(" ").startswith("m"):
+            #     header_data["modules"].append(line.split(" ")[1].split("(")[0])
+
+    # TODO добавить "автор не указан","версия не указана" если соответствующее поле пустое
     print(header_data)
     return header_data
 
 
+# декодирует строку исходя из определенной кодировки
 def universal_decoder(line):
-    # print(chardet.detect(line)['encoding'])
     if chardet.detect(line)['encoding'] == 'ascii':
         return line.decode("ascii")
     if chardet.detect(line)['encoding'] == 'windows-1251':
