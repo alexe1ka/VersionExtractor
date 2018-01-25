@@ -51,12 +51,8 @@ def file_parser(filepath):
                 header_data["version"] = clean_string(line.split(":")[1])
             if "Designer:" in line:
                 header_data["designer"] = clean_string(line.split(":")[1])
-
                 # if "module " in line and "endmodule" not in line and line.lstrip(" ").startswith("m"):
                 #     header_data["modules"].append(line.split(" ")[1].split("(")[0])
-
-    # TODO добавить "автор не указан","версия не указана" если соответствующее поле пустое
-    # print(header_data)
     return header_data
 
 

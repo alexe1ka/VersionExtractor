@@ -4,9 +4,11 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtCore import pyqtSlot
 from PyQt5.QtGui import QStandardItemModel
 from PyQt5.QtGui import QStandardItem
+from PyQt5.QtCore import QThread
 import os
 import catalog_parser
 import json2html
+import TaskThread
 
 
 # pyuic5 input.ui -o output.py
@@ -35,16 +37,11 @@ class ExtractorWindow(QMainWindow, QTreeView):
         self.ui.catalogTreeView.setColumnHidden(3, True)
 
         # регистрация эвентов для кнопок
-        self.ui.openCatalogButton.clicked.connect(self.open_catalog_button_click)
+
         self.ui.startSearchingButton.clicked.connect(self.start_search_hdl_button_click)
         self.ui.generateReportButton.clicked.connect(self.generate_report_button_click)
 
-        self.ui.catalogTreeView.doubleClicked.connect(self.double_click_on_item_test)
-
-    @pyqtSlot()
-    def open_catalog_button_click(self):
-        # TODO эту кнопку убрать нахрен
-        print("open catalog ")
+        self.ui.catalogTreeView.clicked.connect(self.click_on_dir)
 
     @pyqtSlot()
     def start_search_hdl_button_click(self):
@@ -69,23 +66,25 @@ class ExtractorWindow(QMainWindow, QTreeView):
         catalog_parser.generate_report(json2html.json2html.convert(report_data))
         print(report_data)
 
-        # print("generate report")
-
-    def double_click_on_item_test(self, signal):
+    def click_on_dir(self, signal):
         self.file_path = self.ui.catalogTreeView.model().filePath(signal)
-        self.files = [f for f in os.listdir(self.file_path) if
-                      os.path.isfile(os.path.join(self.file_path, f))]  # список файлов в file_path
+
+        self.files = [f for f in os.listdir(self.file_path) if os.path.isfile(os.path.join(self.file_path, f))]  # список файлов в file_path
+
         list_model = QStandardItemModel()
         # TODO если диск пустой - вылетает
         for f in self.files:
             item = QStandardItem(f)
             list_model.appendRow(item)
         self.ui.currentCatalogFilesList.setModel(list_model)
-        # print(self.file_path)
 
 
 if __name__ == "__main__":
     import sys
+    import PyQt5
+
+    # pyqt_plugins = os.path.join(os.path.dirname(PyQt5.__file__), "..", "..", "..", "Library", "plugins")
+    # QApplication.addLibraryPath(pyqt_plugins)
 
     app = QtWidgets.QApplication(sys.argv)
     window = ExtractorWindow()
