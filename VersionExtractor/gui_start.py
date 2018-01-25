@@ -6,6 +6,7 @@ from PyQt5.QtGui import QStandardItemModel
 from PyQt5.QtGui import QStandardItem
 import os
 import catalog_parser
+import json2html
 
 
 # pyuic5 input.ui -o output.py
@@ -62,10 +63,12 @@ class ExtractorWindow(QMainWindow, QTreeView):
 
     @pyqtSlot()
     def generate_report_button_click(self):
-        report = []
-        # TODO вылетает
+        report_data = []
         for file in self.hdl_files_list:
-            report.append(catalog_parser.file_parser(file))
+            report_data.append(catalog_parser.file_parser(file))
+        catalog_parser.generate_report(json2html.json2html.convert(report_data))
+        print(report_data)
+
         # print("generate report")
 
     def double_click_on_item_test(self, signal):
