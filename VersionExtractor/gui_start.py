@@ -27,6 +27,7 @@ class ExtractorWindow(QMainWindow, QTreeView):
         self.tasker = HdlTasker()
         self.thread = QThread()
         self.tasker.moveToThread(self.thread)
+        self.thread.start()
 
         self.file_path = ""  # текущий каталог
         self.files = []  # список файлов в текущем каталоге

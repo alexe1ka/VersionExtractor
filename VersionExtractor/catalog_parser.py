@@ -2,11 +2,11 @@ import os
 import fnmatch
 import chardet
 import json2html
-from PyQt5.QtCore import pyqtSlot
-from PyQt5.QtCore import QObject, QThread
+from PyQt5.QtCore import pyqtSlot, pyqtSignal, QObject, QThread
 import datetime
 
 
+# декодирует строку исходя из определенной кодировки
 def universal_decoder(line):
     if chardet.detect(line)['encoding'] == 'ascii':
         return line.decode("ascii")
@@ -19,17 +19,22 @@ def universal_decoder(line):
     return ""
 
 
+# функция для очистки строки от \n  и лишних пробелов
 def clean_string(dirty_string):
     clean = str(dirty_string).strip()
     clean = str(clean).replace('\n', '')
     return clean
 
 
+# функция парсит шапку файла:
+# описание файла(description),
+# версию(version) ....
+# так же выводит список модулей в данном файле
 def file_parser(filepath):
     list_of_file_data = []  # построчный лист с содержимым файла
     # header_data = {"modules": []}
     header_data = {"File": "имя файла", "description": "описание не определено", "version": "версия не определена",
-                   "designer": "дизайнер не определен"}
+                   "designer": "разработчик не определен"}
     with open(filepath, "rb") as file:  # открываем файл maccyrillic
         # print("filename: " + file.name)
         for line in file:
@@ -48,17 +53,9 @@ def file_parser(filepath):
     return header_data
 
 
-# декодирует строку исходя из определенной кодировки
-
-# функция для очистки строки от \n  и лишних пробелов
-
-
 class HdlTasker(QObject):
-    # def __init__(self) -> None:
-    #     super().__init__(self)
-
-    def run(self) -> None:
-        super().run()
+    finished = pyqtSignal()
+    dataReady = pyqtSignal(list)
 
     @pyqtSlot()
     def find(self, pattern, path):
@@ -69,15 +66,15 @@ class HdlTasker(QObject):
                     result.append(os.path.join(root, name))  # в листе сохраняется путь до файла
                     # print("pattern: " + pattern)
                     # print(name)  # выводит имя файла
+        # self.dataReady.emit(result)
         return result
 
     @pyqtSlot()
     def generate_report(self, parsed_data_from_file):
         now = datetime.datetime.now()
-        now = now.strftime("%Y-%m-%d_%H:%M")
-        report_filename = "report_" + now + ".html"
-        print(str(report_filename))
-        report_file = open(report_filename, 'w')
+        time = now.strftime("%d_%m_%Y_%H-%M")
+        report_filename = "report_" + str(time) + ".html"
+        report_file = open(str(report_filename), 'w')
         message = """<html>
         <head></head>
         <body>"""
@@ -87,20 +84,16 @@ class HdlTasker(QObject):
         </html>"""
         report_file.write(message)
         report_file.close()
-        return 1
-
-        # функция парсит шапку файла:
-        # описание файла(description),
-        # версию(version) ....
-        # так же выводит список модулей в данном файле
+        self.finished.emit()
+        # return 1
 
 
 if __name__ == "__main__":
 
-    test_dir_path = 'E:\!TEST_FOLDER\\v_new'
+    # test_dir_path = 'E:\!TEST_FOLDER\\v_new'
     # test_dir_path = 'E:\!TEST_FOLDER'
     # test_dir_path = 'E:\!test'
-    # test_dir_path = 'D:\MyFiles\Projects\PyCharmProjects\VersionExtractor\VersionExtractor\!TEST_FOLDER\\v_new'
+    test_dir_path = 'D:\MyFiles\Projects\PyCharmProjects\VersionExtractor\VersionExtractor\!TEST_FOLDER\\v_new'
     # test_file_path = 'E:/addr_cntr.v'
     # test_file_path = 'D:/addr_cntr.v'
     # test_file_path = 'D:/many_modules.v'
@@ -108,6 +101,7 @@ if __name__ == "__main__":
     file_list = tasker.find("*.v", test_dir_path)
     thread = QThread()
     tasker.moveToThread(thread)
+    thread.start()
 
     hdl_report_list = []
     for f in file_list:
