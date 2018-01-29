@@ -39,6 +39,13 @@
         </property>
        </widget>
       </item>
+      <item>
+       <widget class="QLabel" name="count_files_label">
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
      </layout>
     </item>
     <item>
