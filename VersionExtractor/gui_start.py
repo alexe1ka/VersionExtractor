@@ -1,6 +1,5 @@
 import os
 
-import json2html
 from PyQt5 import QtCore, QtWidgets
 from PyQt5.QtCore import QThread
 from PyQt5.QtCore import pyqtSlot
@@ -10,7 +9,6 @@ from PyQt5.QtWidgets import *
 
 import VersionExtractorMainWindow
 from catalog_parser import HdlTasker
-import catalog_parser
 
 
 # pyuic5 input.ui -o output.py
@@ -56,29 +54,24 @@ class ExtractorWindow(QMainWindow, QTreeView):
     def start_search_hdl_button_click(self):
         extension = []  # кортеж с разрешениями файлов
         pattern = self.ui.selectFileExtension.currentText()
-        # TODO паттерн для v AND vhd не работает
         if pattern == "*.v":
             extension = ["*.v"]
         elif pattern == "*.vhd":
             extension = ["*.vhd"]
         elif pattern == "*.v/ *.vhd":
             extension = ["*.v", "*.vhd"]
-        self.hdl_files_list = self.tasker.find(pattern, self.file_path, extension)
+        self.hdl_files_list = self.tasker.find(self.file_path, extension)
         hdl_list_model = QStandardItemModel()
         for f in self.hdl_files_list:
             item = QStandardItem(f)
             hdl_list_model.appendRow(item)
         self.ui.foundHdlFilesListView.setModel(hdl_list_model)
+        self.ui.count_files_label.setText("Found " + str(len(self.hdl_files_list)) + " files")
 
     @pyqtSlot()
     def generate_report_button_click(self):
-
-        report_data = []
-        print("hdl_file_list: " + str(self.hdl_files_list))
-        for file in self.hdl_files_list:
-            report_data.append(catalog_parser.file_parser(file))
-        self.tasker.generate_report(json2html.json2html.convert(report_data))
-        print(report_data)
+        # print("hdl_file_list: " + str(self.hdl_files_list))
+        self.tasker.generate_report(self.hdl_files_list)
 
     def click_on_dir(self, signal):
         self.file_path = self.ui.catalogTreeView.model().filePath(signal)
