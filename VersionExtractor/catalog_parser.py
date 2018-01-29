@@ -58,14 +58,12 @@ class HdlTasker(QObject):
     dataReady = pyqtSignal(list)
 
     @pyqtSlot()
-    def find(self, pattern, path):
+    def find(self, pattern, path, extension) -> list:
         result = []
         for root, dirs, files in os.walk(path):
-            for name in files:
-                if fnmatch.fnmatch(name, pattern):
+            for ext in extension:
+                for name in fnmatch.filter(files, ext):
                     result.append(os.path.join(root, name))  # в листе сохраняется путь до файла
-                    # print("pattern: " + pattern)
-                    # print(name)  # выводит имя файла
         # self.dataReady.emit(result)
         return result
 

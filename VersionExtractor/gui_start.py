@@ -54,12 +54,16 @@ class ExtractorWindow(QMainWindow, QTreeView):
 
     @pyqtSlot()
     def start_search_hdl_button_click(self):
+        extension = []  # кортеж с разрешениями файлов
         pattern = self.ui.selectFileExtension.currentText()
         # TODO паттерн для v AND vhd не работает
-        # if str(pattern) == "*.v/ *.vhd":
-        #     new_pattern = "*.v*d"
-        #     print("pattern for all hdl files: " + new_pattern)
-        self.hdl_files_list = self.tasker.find(pattern, self.file_path)
+        if pattern == "*.v":
+            extension = ["*.v"]
+        elif pattern == "*.vhd":
+            extension = ["*.vhd"]
+        elif pattern == "*.v/ *.vhd":
+            extension = ["*.v", "*.vhd"]
+        self.hdl_files_list = self.tasker.find(pattern, self.file_path, extension)
         hdl_list_model = QStandardItemModel()
         for f in self.hdl_files_list:
             item = QStandardItem(f)
