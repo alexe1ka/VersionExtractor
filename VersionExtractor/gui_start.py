@@ -70,7 +70,6 @@ class ExtractorWindow(QMainWindow, QTreeView):
 
     @pyqtSlot()
     def generate_report_button_click(self):
-        # print("hdl_file_list: " + str(self.hdl_files_list))
         self.tasker.generate_report(self.hdl_files_list)
 
     def click_on_dir(self, signal):
