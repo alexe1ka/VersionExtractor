@@ -72,9 +72,37 @@ class HdlTasker(QObject):
         time = self.now.strftime("%d_%m_%Y_%H-%M")
         report_filename = "report_" + str(time) + ".html"
         report_file = open(str(report_filename), 'a+', errors="ignore")
+
+        # пишет таблицу с зебромодом
         report_file.write("""<html>
-        <head></head>
+        <head>
+        <style>
+        table {
+            border-spacing: 0;
+            width: 100%;
+            border: 1px solid #ddd;
+        }
+        
+        th, td {
+            text-align: left;
+            padding: 16px;
+        }
+        
+        tr:nth-child(even) {
+            background-color: #f2f2f2
+        }
+        </style>
+        </head>
         <body>""")
+
+        # добавляет четыре кнопки
+        report_file.write(""" <div class="btn-group">
+                <button>Sort by filename</button>
+                <button>Sort by designer</button>
+                <button>Sort by version</button>
+                </div> 
+                """)
+
         report_file.write("<table border=:'1'>")
         report_file.write("<caption>Version extractor report</caption>")
         report_file.write("""<tr>
@@ -85,10 +113,11 @@ class HdlTasker(QObject):
                 </tr>""")
         for file in file_list:
             file_info = file_parser(file)
+            # TODO тут можно упростить конструкция
             report_file.write(
                 "<tr><td>" + file_info["file"] + "</td><td>" + file_info["description"] + "</td><td>" + file_info[
                     "version"] + "</td><td>" + file_info["designer"] + "</td></tr>")
-
+        report_file.write("</table>")
         report_file.write("""</body>
         </html>""")
         report_file.close()

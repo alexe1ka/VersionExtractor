@@ -11,7 +11,8 @@ import VersionExtractorMainWindow
 from catalog_parser import HdlTasker
 
 
-# pyuic5 input.ui -o output.py
+# pyuic5 input.ui -o output.py - генерация класса с ui
+# pyinstaller --onefile --windowed gui_start.py  - команда,запускающая билд
 
 
 class ExtractorWindow(QMainWindow, QTreeView):
