@@ -83,6 +83,10 @@ class HdlTasker(QObject):
             border: 1px solid #ddd;
         }
         
+        th {
+            cursor: pointer;
+        }
+        
         th, td {
             text-align: left;
             padding: 16px;
@@ -91,33 +95,121 @@ class HdlTasker(QObject):
         tr:nth-child(even) {
             background-color: #f2f2f2
         }
+                
+        .btn-group button {
+            background-color: #4CAF50; /* Green background */
+            border: 1px solid green; /* Green border */
+            color: white; /* White text */
+            padding: 10px 24px; /* Some padding */
+            cursor: pointer; /* Pointer/hand icon */
+            float: left; /* Float the buttons side by side */
+        }
+        
+        .btn-group button:not(:last-child) {
+            border-right: none; /* Prevent double borders */
+        }
+        
+        /* Clear floats (clearfix hack) */
+        .btn-group:after {
+            content: "";
+            clear: both;        
+            display: table;
+        }
+        
+        /* Add a background color on hover */
+        .btn-group button:hover {
+            background-color: #3e8e41;
+        }
         </style>
         </head>
         <body>""")
 
         # добавляет четыре кнопки
-        report_file.write(""" <div class="btn-group">
-                <button>Sort by filename</button>
-                <button>Sort by designer</button>
-                <button>Sort by version</button>
-                </div> 
-                """)
+        # report_file.write(""" <div class="btn-group">
+        #         <button onClick="sortByDescription">Sort by description</button>
+        #         <button onClick="sortByDesigner">Sort by designer</button>
+        #         <button onClick="sortByVersion">Sort by version</button>
+        #         </div>
+        #         """)
 
-        report_file.write("<table border=:'1'>")
-        report_file.write("<caption>Version extractor report</caption>")
+        # добавляет таблицу
+        report_file.write("""<p><strong>Нажмите на имена колонок для сортировки</strong></p> """)
+        report_file.write("""<table border=:'1' id="reportTable">""")
+        report_file.write("""<caption><b style = "font-size:40px">Version extractor report</b></caption>""")
         report_file.write("""<tr>
-                <th>File</th>
-                <th>Description</th>
-                <th>Version</th>
-                <th>Designer</th>
+                <th onClick ="sortTable(0)">File</th>
+                <th onClick ="sortTable(1)">Description</th>
+                <th onClick ="sortTable(2)">Version</th>
+                <th onClick ="sortTable(3)">Designer</th>
                 </tr>""")
         for file in file_list:
             file_info = file_parser(file)
-            # TODO тут можно упростить конструкция
+            # TODO тут можно упростить конструкцию
             report_file.write(
                 "<tr><td>" + file_info["file"] + "</td><td>" + file_info["description"] + "</td><td>" + file_info[
                     "version"] + "</td><td>" + file_info["designer"] + "</td></tr>")
         report_file.write("</table>")
+
+        # скрипты для сортировки отчета
+        report_file.write("""
+        <script>
+            function sortTable(n) {
+                  var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
+                  table = document.getElementById("reportTable");
+                  switching = true;
+                  //Set the sorting direction to ascending:
+                  dir = "asc"; 
+                  /*Make a loop that will continue until
+                  no switching has been done:*/
+                  while (switching) {
+                    //start by saying: no switching is done:
+                    switching = false;
+                    rows = table.getElementsByTagName("TR");
+                    /*Loop through all table rows (except the
+                    first, which contains table headers):*/
+                    for (i = 1; i < (rows.length - 1); i++) {
+                      //start by saying there should be no switching:
+                      shouldSwitch = false;
+                      /*Get the two elements you want to compare,
+                      one from current row and one from the next:*/
+                      x = rows[i].getElementsByTagName("td")[n];
+                      y = rows[i + 1].getElementsByTagName("td")[n];
+                      /*check if the two rows should switch place,
+                      based on the direction, asc or desc:*/
+                      if (dir == "asc") {
+                        if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+                          //if so, mark as a switch and break the loop:
+                          shouldSwitch= true;
+                          break;
+                        }
+                      } else if (dir == "desc") {
+                        if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+                          //if so, mark as a switch and break the loop:
+                          shouldSwitch= true;
+                          break;
+                        }
+                      }
+                    }
+                    if (shouldSwitch) {
+                      /*If a switch has been marked, make the switch
+                      and mark that a switch has been done:*/
+                      rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                      switching = true;
+                      //Each time a switch is done, increase this count by 1:
+                      switchcount ++;      
+                    } else {
+                      /*If no switching has been done AND the direction is "asc",
+                      set the direction to "desc" and run the while loop again.*/
+                      if (switchcount == 0 && dir == "asc") {
+                        dir = "desc";
+                        switching = true;
+                      }
+                    }
+                  }
+                }
+            </script>           
+        """)
+
         report_file.write("""</body>
         </html>""")
         report_file.close()
