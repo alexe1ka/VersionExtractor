@@ -1,59 +1,100 @@
-from PyQt5 import QtCore, uic, QtWidgets, QtGui
-from PyQt5.QtGui import *
-from PyQt5.QtWidgets import *
+import os
+
+from PyQt5 import QtCore, QtWidgets
+from PyQt5.QtCore import QThread
 from PyQt5.QtCore import pyqtSlot
+from PyQt5.QtGui import QStandardItem
+from PyQt5.QtGui import QStandardItemModel
+from PyQt5.QtWidgets import *
+
 import VersionExtractorMainWindow
+from catalog_parser import HdlTasker
 
 
-class ExtractorWindow(QMainWindow, QTreeView, ):
+# pyuic5 input.ui -o output.py - генерация класса с ui
+# pyinstaller --onefile --windowed --icon=icon.ico gui_start.py  - команда,запускающая билд
+
+
+class ExtractorWindow(QMainWindow, QTreeView):
     def __init__(self, parent=None):
         QtWidgets.QWidget.__init__(self, parent)
-        # uic.loadUi("gui.ui", self)
-        self.ui = VersionExtractorMainWindow.Ui_VersionExtractor_by_Alexe1ka()  # устанавливаем в ui мой нарисованный интерфейс из qtDesigner'a,сгенерированный в python
+        self.ui = VersionExtractorMainWindow.Ui_version_extractor_by_alexe1ka()  # сгенерированный класс из Designer'a
         self.ui.setupUi(self)
+
+        # потоки для выполнения тяжелых фоновых задач
+        self.tasker = HdlTasker()
+        self.thread = QThread()
+        self.tasker.moveToThread(self.thread)
+        self.thread.start()
+
+        self.file_path = ""  # текущий каталог
+        self.files = []  # список файлов в текущем каталоге
+        self.hdl_files_list = []  # список найденных hdl файлов
+
+        self.ui.progressBar.moveToThread(self.thread)
 
         model = QFileSystemModel()
         model.setFilter(QtCore.QDir.AllDirs | QtCore.QDir.NoDotAndDotDot)  # в treeView - только каталоги
-        # model.setFilter(QtCore.QDir.Files)  # фильтр на "только файлы"
         model.setRootPath(QtCore.QDir.currentPath())
-        self.ui.catalogsTreeView.setModel(model)
+        self.ui.catalogTreeView.setModel(model)
 
         # скрытие параметров директори
-        self.ui.catalogsTreeView.setColumnHidden(1, True)
-        self.ui.catalogsTreeView.setColumnHidden(2, True)
-        self.ui.catalogsTreeView.setColumnHidden(3, True)
+        self.ui.catalogTreeView.setColumnHidden(1, True)
+        self.ui.catalogTreeView.setColumnHidden(2, True)
+        self.ui.catalogTreeView.setColumnHidden(3, True)
 
-        # self.ui.openCatalogBtn.clicked(self.ui.catalogsTreeView.currentIndex())
+        # регистрация эвентов для кнопок
+        # self.ui.startSearchingButton.clicked.connect(self.start_search_hdl_button_click)
+        self.ui.startSearchingButton.clicked.connect(self.start_search_hdl_button_click)
+        self.ui.generateReportButton.clicked.connect(self.generate_report_button_click)
 
+        self.ui.catalogTreeView.clicked.connect(self.click_on_dir)
 
+    @pyqtSlot()
+    def start_search_hdl_button_click(self):
+        extension = []  # кортеж с разрешениями файлов
+        pattern = self.ui.selectFileExtension.currentText()
+        if pattern == "*.v":
+            extension = ["*.v"]
+        elif pattern == "*.vhd":
+            extension = ["*.vhd"]
+        elif pattern == "*.v/ *.vhd":
+            extension = ["*.v", "*.vhd"]
+        elif pattern == ["*.c/*.cpp,*.h/*.hpp"]:
+            extension = ["*.c", "*.cpp", "*.h", "*.hpp"]
+        elif pattern == ["*.s/*.asm"]:
+            extension = ["*.s", "*.asm"]
+        self.hdl_files_list = self.tasker.find(self.file_path, extension)
+        hdl_list_model = QStandardItemModel()
+        for f in self.hdl_files_list:
+            item = QStandardItem(f)
+            hdl_list_model.appendRow(item)
+        self.ui.foundHdlFilesListView.setModel(hdl_list_model)
+        self.ui.count_files_label.setText("Found " + str(len(self.hdl_files_list)) + " files")
 
+    @pyqtSlot()
+    def generate_report_button_click(self):
+        self.tasker.generate_report(self.hdl_files_list)
 
+    def click_on_dir(self, signal):
+        self.file_path = self.ui.catalogTreeView.model().filePath(signal)
 
-        # index = self.ui.catalogsTreeView.selectedIndexes()
-        # self.ui.currentCatalogFiles.conn
-        # print(index)
+        self.files = [f for f in os.listdir(self.file_path) if
+                      os.path.isfile(os.path.join(self.file_path, f))]  # список файлов в file_path
 
-        # index = self.ui.catalogsTreeView.currentIndex()
-        # print(index)
-        # files_model = QFileSystemModel()
-        # files_model.data(index)
-        # files_model.setFilter(QtCore.QDir.Files ) #| QtCore.QDir.NoDotAndDotDot
-        # self.ui.currentFilesTreeView.setModel(files_model)
-        # self.ui.currentFilesTreeView.setColumnHidden(1, True)
-        # self.ui.currentFilesTreeView.setColumnHidden(2, True)
-        # self.ui.currentFilesTreeView.setColumnHidden(3, True)
+        list_model = QStandardItemModel()
+        # TODO если диск пустой - вылетает
+        for f in self.files:
+            item = QStandardItem(f)
+            list_model.appendRow(item)
+        self.ui.currentCatalogFilesList.setModel(list_model)
 
-        # self.ui.currentCatalogFiles.setModel()
-
-
-# app = QtWidgets.QApplication(sys.argv)
-# window = QWidget()
-# window = uic.loadUi("gui.ui")
-# window.show()
-# sys.exit(app.exec_())
 
 if __name__ == "__main__":
     import sys
+
+    # pyqt_plugins = os.path.join(os.path.dirname(PyQt5.__file__), "..", "..", "..", "Library", "plugins")
+    # QApplication.addLibraryPath(pyqt_plugins)
 
     app = QtWidgets.QApplication(sys.argv)
     window = ExtractorWindow()

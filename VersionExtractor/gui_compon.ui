@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>version_extractor_by_alexe1ka</class>
+ <widget class="QMainWindow" name="version_extractor_by_alexe1ka">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>820</width>
+    <height>601</height>
+   </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>820</width>
+    <height>601</height>
+   </size>
+  </property>
+  <property name="windowTitle">
+   <string>VersionExtractorByAlexe1ka</string>
+  </property>
+  <widget class="QWidget" name="central_widget">
+   <property name="minimumSize">
+    <size>
+     <width>820</width>
+     <height>581</height>
+    </size>
+   </property>
+   <layout class="QHBoxLayout" name="horizontalLayout_2">
+    <item>
+     <layout class="QVBoxLayout" name="leftCatalogLayout">
+      <item>
+       <widget class="QTreeView" name="catalogTreeView"/>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout">
+        <item>
+         <widget class="QProgressBar" name="progressBar">
+          <property name="value">
+           <number>0</number>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="count_files_label">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>70</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <layout class="QVBoxLayout" name="central_catalog_files_layout">
+      <item>
+       <widget class="QListView" name="currentCatalogFilesList">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Ignored" vsizetype="Expanding">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>180</width>
+          <height>530</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>262</width>
+          <height>16777215</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="central_button_layout">
+        <item>
+         <widget class="QComboBox" name="selectFileExtension">
+          <item>
+           <property name="text">
+            <string>*.v</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>*.vhd</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>*.v/ *.vhd</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>*.c/*.cpp,*.h/*.hpp</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>*.s/*.asm</string>
+           </property>
+          </item>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="startSearchingButton">
+          <property name="text">
+           <string>Search hdl files</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <layout class="QVBoxLayout" name="right_result_layoyt">
+      <item>
+       <widget class="QListView" name="foundHdlFilesListView"/>
+      </item>
+      <item>
+       <widget class="QPushButton" name="generateReportButton">
+        <property name="text">
+         <string>Generate report</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+   </layout>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
