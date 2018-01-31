@@ -12,13 +12,12 @@ from catalog_parser import HdlTasker
 
 
 # pyuic5 input.ui -o output.py - генерация класса с ui
-# pyinstaller --onefile --windowed gui_start.py  - команда,запускающая билд
+# pyinstaller --onefile --windowed --icon=icon.ico gui_start.py  - команда,запускающая билд
 
 
 class ExtractorWindow(QMainWindow, QTreeView):
     def __init__(self, parent=None):
         QtWidgets.QWidget.__init__(self, parent)
-        # uic.loadUi("gui.ui", self)
         self.ui = VersionExtractorMainWindow.Ui_version_extractor_by_alexe1ka()  # сгенерированный класс из Designer'a
         self.ui.setupUi(self)
 
@@ -61,6 +60,10 @@ class ExtractorWindow(QMainWindow, QTreeView):
             extension = ["*.vhd"]
         elif pattern == "*.v/ *.vhd":
             extension = ["*.v", "*.vhd"]
+        elif pattern == ["*.c/*.cpp,*.h/*.hpp"]:
+            extension = ["*.c", "*.cpp", "*.h", "*.hpp"]
+        elif pattern == ["*.s/*.asm"]:
+            extension = ["*.s", "*.asm"]
         self.hdl_files_list = self.tasker.find(self.file_path, extension)
         hdl_list_model = QStandardItemModel()
         for f in self.hdl_files_list:

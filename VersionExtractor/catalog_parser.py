@@ -1,7 +1,7 @@
 import os
 import fnmatch
 import chardet
-from PyQt5.QtCore import pyqtSlot, pyqtSignal, QObject, QThread
+from PyQt5.QtCore import pyqtSlot, QObject, QThread
 import datetime
 
 
@@ -35,8 +35,11 @@ def file_parser(filepath):
     header_data = {"file": "имя файла", "description": "описание не определено", "version": "версия не определена",
                    "designer": "разработчик не определен"}
     with open(filepath, "rb") as file:  # открываем файл
+        line_counter = 0
         for line in file:
-            # print(line)
+            print(line)
+            line_counter += 1
+            print(line_counter)
             line = universal_decoder(line)
             list_of_file_data.append(line)
             header_data["file"] = file.name
@@ -46,20 +49,25 @@ def file_parser(filepath):
                 header_data["version"] = clean_string(line.split(":")[1])
             if "Designer:" in line:
                 header_data["designer"] = clean_string(line.split(":")[1])
+            if "Developer:" in line:
+                header_data["designer"] = clean_string(line.split(":")[1])
                 # if "module " in line and "endmodule" not in line and line.lstrip(" ").startswith("m"):
                 #     header_data["modules"].append(line.split(" ")[1].split("(")[0])
+            if line_counter == 7:
+                break
     file.close()
     return header_data
 
 
 class HdlTasker(QObject):
-    finished = pyqtSignal()
-    dataReady = pyqtSignal(list)
     now = datetime.datetime.now()
+    time = ""
+    path = ""
 
     @pyqtSlot()
     def find(self, path, extension) -> list:
         result = []
+        self.path = path
         for root, dirs, files in os.walk(path):
             for ext in extension:
                 for name in fnmatch.filter(files, ext):
@@ -69,8 +77,8 @@ class HdlTasker(QObject):
 
     @pyqtSlot()
     def generate_report(self, file_list):
-        time = self.now.strftime("%d_%m_%Y_%H-%M")
-        report_filename = "report_" + str(time) + ".html"
+        self.time = self.now.strftime("%d_%m_%Y_%H-%M")
+        report_filename = "report_" + str(self.time) + ".html"
         report_file = open(str(report_filename), 'a+', errors="ignore")
 
         # пишет таблицу с зебромодом
@@ -135,7 +143,9 @@ class HdlTasker(QObject):
         # добавляет таблицу
         report_file.write("""<p><strong>Нажмите на имена колонок для сортировки</strong></p> """)
         report_file.write("""<table border=:'1' id="reportTable">""")
-        report_file.write("""<caption><b style = "font-size:40px">Version extractor report</b></caption>""")
+        report_file.write(
+            """<caption><b style = "font-size:40px">Version extractor report<br>Folder: %s, Timestamp: %s </b></caption>""" % (
+                self.path, self.time))
         report_file.write("""<tr>
                 <th onClick ="sortTable(0)">File</th>
                 <th onClick ="sortTable(1)">Description</th>
@@ -199,7 +209,8 @@ class HdlTasker(QObject):
 
 if __name__ == "__main__":
     # test_dir_path = 'E:\!TEST_FOLDER'
-    test_dir_path = 'E:\!test'
+    # test_dir_path = 'E:\BurakovTestFolder'
+    test_dir_path = 'E:\!NewHeaderTest'
     # test_dir_path = "V:\_ВНБО-1\_Разработка ПО"
     # test_dir_path = 'D:\MyFiles\Projects\PyCharmProjects\VersionExtractor\VersionExtractor\!TEST_FOLDER\\v_new'
     test_file_with_fuck_coding = "E:\!test\dc_fifo_16_16.v"
