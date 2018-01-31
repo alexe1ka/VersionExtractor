@@ -144,7 +144,8 @@ class HdlTasker(QObject):
         report_file.write("""<p><strong>Нажмите на имена колонок для сортировки</strong></p> """)
         report_file.write("""<table border=:'1' id="reportTable">""")
         report_file.write(
-            """<caption><b style = "font-size:40px">Version extractor report<br>Folder: %s, Timestamp: %s </b></caption>""" % (
+            """<caption><b style = "font-size:40px">Version extractor report<br>
+            Folder: %s, Timestamp: %s </b></caption>""" % (
                 self.path, self.time))
         report_file.write("""<tr>
                 <th onClick ="sortTable(0)">File</th>
