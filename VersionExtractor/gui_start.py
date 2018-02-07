@@ -78,12 +78,10 @@ class ExtractorWindow(QMainWindow, QTreeView):
 
     @pyqtSlot()
     def generate_report_button_click(self):
-        self.thread1 = ProgressThread.MyThread(1)
+        self.thread1 = ProgressThread.MyThread(1, self.hdl_files_list)
         self.thread1.progress.connect(self.setFirstPbar)
         self.thread1.start()
-
-        self.tasker.generate_report(self.hdl_files_list)
-
+        # self.tasker.generate_report(self.hdl_files_list)
         # while self.counter < 100:
         #     self.ui.progressBar.setValue(self.tasker.current_counter * 100 / len(self.hdl_files_list))
 

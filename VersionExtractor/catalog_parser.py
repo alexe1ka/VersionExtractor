@@ -3,6 +3,7 @@ import fnmatch
 import chardet
 from PyQt5.QtCore import pyqtSlot, QObject, QThread
 import datetime
+import ProgressThread
 
 
 # декодирует строку исходя из определенной кодировки
@@ -37,9 +38,9 @@ def file_parser(filepath):
     with open(filepath, "rb") as file:  # открываем файл
         line_counter = 0
         for line in file:
-            print(line)
+            # print(line)
             line_counter += 1
-            print(line_counter)
+            # print(line_counter)
             line = universal_decoder(line)
             list_of_file_data.append(line)
             header_data["file"] = file.name
@@ -206,15 +207,18 @@ class HdlTasker(QObject):
 if __name__ == "__main__":
     # test_dir_path = 'E:\!VersionExtractorTestFolder\!TEST_FOLDER'
     # test_dir_path = 'E:\!VersionExtractorTestFolder\BurakovTestFolder'
-    test_dir_path = 'E:\!VersionExtractorTestFolder\!NewHeaderTest'
-    # test_dir_path = "V:\_ВНБО-1\_Разработка ПО"
+    # test_dir_path = 'E:\!VersionExtractorTestFolder\!NewHeaderTest'
+    test_dir_path = "V:\_ВНБО-1\_Разработка ПО"
     # test_dir_path = 'D:\MyFiles\Projects\PyCharmProjects\VersionExtractor\VersionExtractor\!TEST_FOLDER\\v_new'
 
     tasker = HdlTasker()
-    thread = QThread()
-    tasker.moveToThread(thread)
-    thread.start()
+    # thread = QThread()
+    # tasker.moveToThread(thread)
+    # thread.start()
     file_list = tasker.find(test_dir_path, ["*.v", "*.vhd"])
-    print(file_list)
-    tasker.generate_report(file_list)
+    # print(file_list)
+
+    thread1 = ProgressThread.MyThread(1, file_list)
+    thread1.start()
+    # tasker.generate_report(file_list)
     # print(file_parser(test_file_with_fuck_coding))
