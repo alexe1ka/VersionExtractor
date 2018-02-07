@@ -63,6 +63,7 @@ class HdlTasker(QObject):
     now = datetime.datetime.now()
     time = ""
     path = ""
+    current_counter = 0  # счетчик для количества обработанных файлов
 
     @pyqtSlot()
     def find(self, path, extension) -> list:
@@ -132,14 +133,6 @@ class HdlTasker(QObject):
         </head>
         <body>""")
 
-        # добавляет четыре кнопки
-        # report_file.write(""" <div class="btn-group">
-        #         <button onClick="sortByDescription">Sort by description</button>
-        #         <button onClick="sortByDesigner">Sort by designer</button>
-        #         <button onClick="sortByVersion">Sort by version</button>
-        #         </div>
-        #         """)
-
         # добавляет таблицу
         report_file.write("""<p><strong>Нажмите на имена колонок для сортировки</strong></p> """)
         report_file.write("""<table border=:'1' id="reportTable">""")
@@ -153,8 +146,11 @@ class HdlTasker(QObject):
                 <th onClick ="sortTable(2)">Version</th>
                 <th onClick ="sortTable(3)">Designer</th>
                 </tr>""")
+
+        self.current_counter = 0
         for file in file_list:
             file_info = file_parser(file)
+            self.current_counter += 1
             # TODO тут можно упростить конструкцию
             report_file.write(
                 "<tr><td>" + file_info["file"] + "</td><td>" + file_info["description"] + "</td><td>" + file_info[
@@ -202,19 +198,17 @@ class HdlTasker(QObject):
                 }
             </script>           
         """)
-
         report_file.write("""</body>
         </html>""")
         report_file.close()
 
 
 if __name__ == "__main__":
-    # test_dir_path = 'E:\!TEST_FOLDER'
-    # test_dir_path = 'E:\BurakovTestFolder'
-    test_dir_path = 'E:\!NewHeaderTest'
+    # test_dir_path = 'E:\!VersionExtractorTestFolder\!TEST_FOLDER'
+    # test_dir_path = 'E:\!VersionExtractorTestFolder\BurakovTestFolder'
+    test_dir_path = 'E:\!VersionExtractorTestFolder\!NewHeaderTest'
     # test_dir_path = "V:\_ВНБО-1\_Разработка ПО"
     # test_dir_path = 'D:\MyFiles\Projects\PyCharmProjects\VersionExtractor\VersionExtractor\!TEST_FOLDER\\v_new'
-    test_file_with_fuck_coding = "E:\!test\dc_fifo_16_16.v"
 
     tasker = HdlTasker()
     thread = QThread()
