@@ -1,7 +1,6 @@
 import os
 
 from PyQt5 import QtCore, QtWidgets
-from PyQt5.QtCore import QThread
 from PyQt5.QtCore import pyqtSlot
 from PyQt5.QtGui import QStandardItem
 from PyQt5.QtGui import QStandardItemModel
@@ -24,15 +23,10 @@ class ExtractorWindow(QMainWindow, QTreeView):
 
         # потоки для выполнения тяжелых фоновых задач
         self.worker = HdlWorker()
-        # self.thread = QThread()
-        # self.tasker.moveToThread(self.thread)
-        # self.thread.start()
 
         self.file_path = ""  # текущий каталог
         self.files = []  # список файлов в текущем каталоге
         self.hdl_files_list = []  # список найденных hdl файлов
-
-        # self.ui.progressBar.moveToThread(self.thread)
 
         model = QFileSystemModel()
         model.setFilter(QtCore.QDir.AllDirs | QtCore.QDir.NoDotAndDotDot)  # в treeView - только каталоги
@@ -82,9 +76,6 @@ class ExtractorWindow(QMainWindow, QTreeView):
         self.thread1 = ProgressThread.MyThread(1, self.hdl_files_list, self.worker)
         self.thread1.progress.connect(self.set_progress)
         self.thread1.start()
-        # self.tasker.generate_report(self.hdl_files_list)
-        # while self.counter < 100:
-        #     self.ui.progressBar.setValue(self.tasker.current_counter * 100 / len(self.hdl_files_list))
 
     def click_on_dir(self, signal):
         self.file_path = self.ui.catalogTreeView.model().filePath(signal)
@@ -98,12 +89,6 @@ class ExtractorWindow(QMainWindow, QTreeView):
             item = QStandardItem(f)
             list_model.appendRow(item)
         self.ui.currentCatalogFilesList.setModel(list_model)
-
-    # @pyqtSlot()
-    # def set_progressbar_value(self, value):
-    #     return 0
-    #     while self.counter < 100:
-    #         self.worker.current_counter * 100 / len(self.hdl_files_list)
 
     def set_progress(self, value):
         self.firstStep = value  # делаем какиенить действия

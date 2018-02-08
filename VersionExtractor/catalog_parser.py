@@ -212,13 +212,9 @@ if __name__ == "__main__":
     # test_dir_path = 'D:\MyFiles\Projects\PyCharmProjects\VersionExtractor\VersionExtractor\!TEST_FOLDER\\v_new'
 
     tasker = HdlWorker()
-    # thread = QThread()
-    # tasker.moveToThread(thread)
-    # thread.start()
+
     file_list = tasker.find(test_dir_path, ["*.v", "*.vhd"])
     # print(file_list)
 
     thread1 = ProgressThread.MyThread(1, file_list, tasker)
     thread1.start()
-    # tasker.generate_report(file_list)
-    # print(file_parser(test_file_with_fuck_coding))
