@@ -9,7 +9,7 @@ from PyQt5.QtWidgets import *
 import ProgressThread
 
 import VersionExtractorMainWindow
-from catalog_parser import HdlTasker
+from catalog_parser import HdlWorker
 
 
 # pyuic5 input.ui -o output.py - генерация класса с ui
@@ -23,7 +23,7 @@ class ExtractorWindow(QMainWindow, QTreeView):
         self.ui.setupUi(self)
 
         # потоки для выполнения тяжелых фоновых задач
-        self.tasker = HdlTasker()
+        self.worker = HdlWorker()
         # self.thread = QThread()
         # self.tasker.moveToThread(self.thread)
         # self.thread.start()
@@ -31,7 +31,6 @@ class ExtractorWindow(QMainWindow, QTreeView):
         self.file_path = ""  # текущий каталог
         self.files = []  # список файлов в текущем каталоге
         self.hdl_files_list = []  # список найденных hdl файлов
-        self.counter = 0  # счетчик прочитанных файлов(для progressbar'a)
 
         # self.ui.progressBar.moveToThread(self.thread)
 
@@ -68,7 +67,7 @@ class ExtractorWindow(QMainWindow, QTreeView):
             extension = ["*.c", "*.cpp", "*.h", "*.hpp"]
         elif pattern == ["*.s/*.asm"]:
             extension = ["*.s", "*.asm"]
-        self.hdl_files_list = self.tasker.find(self.file_path, extension)
+        self.hdl_files_list = self.worker.find(self.file_path, extension)
         hdl_list_model = QStandardItemModel()
         for f in self.hdl_files_list:
             item = QStandardItem(f)
@@ -78,8 +77,10 @@ class ExtractorWindow(QMainWindow, QTreeView):
 
     @pyqtSlot()
     def generate_report_button_click(self):
-        self.thread1 = ProgressThread.MyThread(1, self.hdl_files_list)
-        self.thread1.progress.connect(self.setFirstPbar)
+        self.ui.progressBar.setMaximum(0)
+        self.ui.progressBar.setMinimum(0)
+        self.thread1 = ProgressThread.MyThread(1, self.hdl_files_list, self.worker)
+        self.thread1.progress.connect(self.set_progress)
         self.thread1.start()
         # self.tasker.generate_report(self.hdl_files_list)
         # while self.counter < 100:
@@ -98,14 +99,18 @@ class ExtractorWindow(QMainWindow, QTreeView):
             list_model.appendRow(item)
         self.ui.currentCatalogFilesList.setModel(list_model)
 
-    @pyqtSlot()
-    def set_progressbar_value(self, value):
-        while self.counter < 100:
-            self.tasker.current_counter * 100 / len(self.hdl_files_list)
+    # @pyqtSlot()
+    # def set_progressbar_value(self, value):
+    #     return 0
+    #     while self.counter < 100:
+    #         self.worker.current_counter * 100 / len(self.hdl_files_list)
 
-    def setFirstPbar(self, value):
+    def set_progress(self, value):
         self.firstStep = value  # делаем какиенить действия
         self.ui.progressBar.setValue(value)  # устанавливаем значение прогрессбара1
+        if value == 100:
+            self.ui.progressBar.setMaximum(100)
+            self.ui.progressBar.setValue(100)
 
 
 if __name__ == "__main__":
