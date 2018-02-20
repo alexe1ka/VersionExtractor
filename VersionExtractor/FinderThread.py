@@ -5,7 +5,6 @@ from catalog_parser import HdlWorker
 class FinderThread(QThread):
     progress = pyqtSignal(int)  # сигнал который мы будем передавать прогрессбару
     dataReady = pyqtSignal(list)
-    # finished = pyqtSignal()
     worker = HdlWorker()
     file_path = ""
     extension = ""
@@ -20,5 +19,4 @@ class FinderThread(QThread):
     def run(self):
         self.hdl_file_list = self.worker.find(self.file_path, self.extension)
         self.dataReady.emit(self.hdl_file_list)
-        self.finished.emit()
         self.progress.emit(100)

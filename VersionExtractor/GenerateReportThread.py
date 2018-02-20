@@ -14,10 +14,6 @@ class ReportThread(QThread):
         self.worker = worker
 
     def run(self):
-        # print("worker path in generate report function in new thread: ")
-        # print(self.worker.path)
-        # print("new thread")
-        # print(self.hdl_file_list)
         self.worker.generate_report(self.hdl_file_list)
         self.progress.emit(100)
 

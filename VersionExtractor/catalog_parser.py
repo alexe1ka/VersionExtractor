@@ -39,9 +39,7 @@ def file_parser(filepath):
     with open(filepath, "rb") as file:  # открываем файл
         line_counter = 0
         for line in file:
-            # print(line)
             line_counter += 1
-            # print(line_counter)
             line = universal_decoder(line)
             list_of_file_data.append(line)
             header_data["file"] = file.name
@@ -53,8 +51,6 @@ def file_parser(filepath):
                 header_data["designer"] = clean_string(line.split(":")[1])
             if "Developer:" in line:
                 header_data["designer"] = clean_string(line.split(":")[1])
-                # if "module " in line and "endmodule" not in line and line.lstrip(" ").startswith("m"):
-                #     header_data["modules"].append(line.split(" ")[1].split("(")[0])
             if line_counter == 7:
                 break
     file.close()
@@ -74,8 +70,7 @@ class HdlWorker(QObject):
         for root, dirs, files in os.walk(path):
             for ext in extension:
                 for name in fnmatch.filter(files, ext):
-                    result.append(os.path.join(root, name))  # в листе сохраняется путь до файла
-        # self.dataReady.emit(result)
+                    result.append(os.path.join(root, name))  # в листе сохраняются пути до файлов
         return result
 
     @pyqtSlot()
@@ -84,10 +79,8 @@ class HdlWorker(QObject):
         self.time = self.now.strftime("%d_%m_%Y_%H-%M-%S")
         report_filename = "report_" + str(self.time) + ".html"
         self.time = self.now.strftime("%d:%m:%Y, %H:%M")
-
         report_file = open(str(report_filename), 'a+', errors="ignore")
-
-        # пишет таблицу с зебромодом
+        # стили (зебромод для таблицы)
         report_file.write("""<html>
         <head>
         <style>
@@ -123,14 +116,14 @@ class HdlWorker(QObject):
             border-right: none; /* Prevent double borders */
         }
         
-        /* Clear floats (clearfix hack) */
+
         .btn-group:after {
             content: "";
             clear: both;        
             display: table;
         }
         
-        /* Add a background color on hover */
+
         .btn-group button:hover {
             background-color: #3e8e41;
         }
@@ -214,11 +207,6 @@ if __name__ == "__main__":
     # test_dir_path = 'E:\!VersionExtractorTestFolder\!NewHeaderTest'
     test_dir_path = "V:\_ВНБО-1\_Разработка ПО"
     # test_dir_path = 'D:\MyFiles\Projects\PyCharmProjects\VersionExtractor\VersionExtractor\!TEST_FOLDER\\v_new'
-
     tasker = HdlWorker()
-
     file_list = tasker.find(test_dir_path, ["*.v", "*.vhd"])
-    # print(file_list)
 
-    thread1 = GenerateReportThread.ReportThread(1, file_list, tasker)
-    thread1.start()

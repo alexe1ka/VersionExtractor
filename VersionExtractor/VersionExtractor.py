@@ -1,13 +1,12 @@
 import os
-
 from PyQt5 import QtCore, QtWidgets
 from PyQt5.QtCore import pyqtSlot
 from PyQt5.QtGui import QStandardItem
 from PyQt5.QtGui import QStandardItemModel
 from PyQt5.QtWidgets import *
+
 import GenerateReportThread
 import FinderThread
-
 import VersionExtractorMainWindow
 from catalog_parser import HdlWorker
 
@@ -45,9 +44,6 @@ class ExtractorWindow(QMainWindow, QTreeView):
         self.ui.generateReportButton.clicked.connect(self.generate_report_button_click)
         self.ui.catalogTreeView.clicked.connect(self.click_on_dir)
 
-        # тесты для потоков
-        self.firstStep = 0
-
     @pyqtSlot()
     def start_search_hdl_button_click(self):
         self.ui.startSearchingButton.setEnabled(False)
@@ -70,7 +66,6 @@ class ExtractorWindow(QMainWindow, QTreeView):
         self.finder_thread.start()
         self.finder_thread.progress.connect(self.set_progress)
         self.finder_thread.dataReady.connect(self.set_data)
-        # self.hdl_files_list = self.worker.find(self.file_path, extension)
         # self.finder_thread.progress.connect(self.set_progress)
 
     @pyqtSlot()
@@ -88,7 +83,6 @@ class ExtractorWindow(QMainWindow, QTreeView):
             self.files = [f for f in os.listdir(self.file_path) if
                           os.path.isfile(os.path.join(self.file_path, f))]  # список файлов в file_path
             list_model = QStandardItemModel()
-            # TODO если диск пустой - вылетает
             for f in self.files:
                 item = QStandardItem(f)
                 list_model.appendRow(item)
@@ -105,11 +99,9 @@ class ExtractorWindow(QMainWindow, QTreeView):
         self.ui.foundHdlFilesListView.setModel(hdl_list_model)
         self.ui.count_files_label.setText("Found " + str(len(self.hdl_files_list)) + " files")
         self.ui.startSearchingButton.setEnabled(True)
-        # print(self.hdl_files_list)
 
     def set_progress(self, value):
-        self.firstStep = value  # делаем какиенить действия
-        self.ui.progressBar.setValue(value)  # устанавливаем значение прогрессбара1
+        self.ui.progressBar.setValue(value)  # устанавливаем значение прогрессбара
         if value == 100:
             self.ui.progressBar.setMaximum(100)
             self.ui.progressBar.setValue(100)
@@ -118,9 +110,6 @@ class ExtractorWindow(QMainWindow, QTreeView):
 
 if __name__ == "__main__":
     import sys
-
-    # pyqt_plugins = os.path.join(os.path.dirname(PyQt5.__file__), "..", "..", "..", "Library", "plugins")
-    # QApplication.addLibraryPath(pyqt_plugins)
 
     app = QtWidgets.QApplication(sys.argv)
     window = ExtractorWindow()
