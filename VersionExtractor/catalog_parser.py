@@ -3,7 +3,7 @@ import fnmatch
 import chardet
 from PyQt5.QtCore import pyqtSlot, QObject, QThread
 import datetime
-import GenerateReportAndProgressThread
+import GenerateReportThread
 
 
 # декодирует строку исходя из определенной кодировки
@@ -80,9 +80,11 @@ class HdlWorker(QObject):
 
     @pyqtSlot()
     def generate_report(self, file_list):
-        self.time = self.now.strftime("%d_%m_%Y_%H-%M")
+        self.now = datetime.datetime.now()
+        self.time = self.now.strftime("%d_%m_%Y_%H-%M-%S")
         report_filename = "report_" + str(self.time) + ".html"
         self.time = self.now.strftime("%d:%m:%Y, %H:%M")
+
         report_file = open(str(report_filename), 'a+', errors="ignore")
 
         # пишет таблицу с зебромодом
@@ -218,5 +220,5 @@ if __name__ == "__main__":
     file_list = tasker.find(test_dir_path, ["*.v", "*.vhd"])
     # print(file_list)
 
-    thread1 = GenerateReportAndProgressThread.ReportThread(1, file_list, tasker)
+    thread1 = GenerateReportThread.ReportThread(1, file_list, tasker)
     thread1.start()

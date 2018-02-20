@@ -5,14 +5,15 @@ from PyQt5.QtCore import pyqtSlot
 from PyQt5.QtGui import QStandardItem
 from PyQt5.QtGui import QStandardItemModel
 from PyQt5.QtWidgets import *
-import GenerateReportAndProgressThread
+import GenerateReportThread
+import FinderThread
 
 import VersionExtractorMainWindow
 from catalog_parser import HdlWorker
 
 
 # pyuic5 input.ui -o output.py - генерация класса с ui
-# pyinstaller --onefile --windowed --icon=icon.ico gui_start.py  - команда,запускающая билд
+# pyinstaller --onefile --windowed --icon=icon.ico VersionExtractor.py  - команда,запускающая билд
 
 
 class ExtractorWindow(QMainWindow, QTreeView):
@@ -49,6 +50,7 @@ class ExtractorWindow(QMainWindow, QTreeView):
 
     @pyqtSlot()
     def start_search_hdl_button_click(self):
+        self.ui.startSearchingButton.setEnabled(False)
         extension = []  # кортеж с разрешениями файлов
         pattern = self.ui.selectFileExtension.currentText()
         if pattern == "*.v":
@@ -62,22 +64,23 @@ class ExtractorWindow(QMainWindow, QTreeView):
         elif pattern == ["*.s/*.asm"]:
             extension = ["*.s", "*.asm"]
 
-        self.hdl_files_list = self.worker.find(self.file_path, extension)
-        hdl_list_model = QStandardItemModel()
-
-        for f in self.hdl_files_list:
-            item = QStandardItem(f)
-            hdl_list_model.appendRow(item)
-        self.ui.foundHdlFilesListView.setModel(hdl_list_model)
-        self.ui.count_files_label.setText("Found " + str(len(self.hdl_files_list)) + " files")
+        self.ui.progressBar.setMaximum(0)
+        self.ui.progressBar.setMinimum(0)
+        self.finder_thread = FinderThread.FinderThread(self.worker, self.file_path, extension)
+        self.finder_thread.start()
+        self.finder_thread.progress.connect(self.set_progress)
+        self.finder_thread.dataReady.connect(self.set_data)
+        # self.hdl_files_list = self.worker.find(self.file_path, extension)
+        # self.finder_thread.progress.connect(self.set_progress)
 
     @pyqtSlot()
     def generate_report_button_click(self):
+        self.ui.generateReportButton.setEnabled(False)
         self.ui.progressBar.setMaximum(0)
         self.ui.progressBar.setMinimum(0)
-        print("worker path in generate report function before start new thread: ")
-        print(self.worker.path)
-        self.generate_report_thread = GenerateReportAndProgressThread.ReportThread(self.hdl_files_list, self.worker)
+        # print("worker path in generate report function before start new thread: ")
+        # print(self.worker.path)
+        self.generate_report_thread = GenerateReportThread.ReportThread(self.hdl_files_list, self.worker)
         self.generate_report_thread.progress.connect(self.set_progress)
         self.generate_report_thread.start()
 
@@ -95,12 +98,24 @@ class ExtractorWindow(QMainWindow, QTreeView):
         except PermissionError:
             QMessageBox.warning(None, 'Warning', 'Please input disk in disk drive')
 
+    def set_data(self, value):
+        self.hdl_files_list = value
+        hdl_list_model = QStandardItemModel()
+        for f in self.hdl_files_list:
+            item = QStandardItem(f)
+            hdl_list_model.appendRow(item)
+        self.ui.foundHdlFilesListView.setModel(hdl_list_model)
+        self.ui.count_files_label.setText("Found " + str(len(self.hdl_files_list)) + " files")
+        self.ui.startSearchingButton.setEnabled(True)
+        # print(self.hdl_files_list)
+
     def set_progress(self, value):
         self.firstStep = value  # делаем какиенить действия
         self.ui.progressBar.setValue(value)  # устанавливаем значение прогрессбара1
         if value == 100:
             self.ui.progressBar.setMaximum(100)
             self.ui.progressBar.setValue(100)
+            self.ui.generateReportButton.setEnabled(True)
 
 
 if __name__ == "__main__":
