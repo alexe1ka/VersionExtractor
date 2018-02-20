@@ -82,6 +82,7 @@ class HdlWorker(QObject):
     def generate_report(self, file_list):
         self.time = self.now.strftime("%d_%m_%Y_%H-%M")
         report_filename = "report_" + str(self.time) + ".html"
+        self.time = self.now.strftime("%d:%m:%Y, %H:%M")
         report_file = open(str(report_filename), 'a+', errors="ignore")
 
         # пишет таблицу с зебромодом
@@ -140,7 +141,7 @@ class HdlWorker(QObject):
         report_file.write("""<table border=:'1' id="reportTable">""")
         report_file.write(
             """<caption><b style = "font-size:40px">Version extractor report<br>
-            Folder: %s, Timestamp: %s </b></caption>""" % (
+            Folder: %s,</br> Timestamp: %s </b></caption>""" % (
                 self.path, self.time))
         report_file.write("""<tr>
                 <th onClick ="sortTable(0)">File</th>

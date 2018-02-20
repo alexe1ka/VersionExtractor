@@ -52,6 +52,7 @@ def clean_string(dirty_string):
 
 
 if __name__ == "__main__":
-    filepath = "E:\!VersionExtractorTestFolder\\noCorrectFirstSYmbol\\p_buffer_sw.v"
+    # filepath = "E:\!VersionExtractorTestFolder\\noCorrectFirstSYmbol\\p_buffer_sw.v"
+    filepath = "E:\!VersionExtractorTestFolder\\noCorrectFirstSYmbol\\bus_mux.v"
     print("header data: ")
     print(file_parser(filepath=filepath))

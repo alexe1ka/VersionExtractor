@@ -5,7 +5,6 @@ from PyQt5.QtCore import pyqtSlot
 from PyQt5.QtGui import QStandardItem
 from PyQt5.QtGui import QStandardItemModel
 from PyQt5.QtWidgets import *
-from PyQt5.QtCore import QThread
 import GenerateReportAndProgressThread
 
 import VersionExtractorMainWindow
@@ -76,7 +75,9 @@ class ExtractorWindow(QMainWindow, QTreeView):
     def generate_report_button_click(self):
         self.ui.progressBar.setMaximum(0)
         self.ui.progressBar.setMinimum(0)
-        self.generate_report_thread = GenerateReportAndProgressThread.ReportThread(1, self.hdl_files_list, self.worker)
+        print("worker path in generate report function before start new thread: ")
+        print(self.worker.path)
+        self.generate_report_thread = GenerateReportAndProgressThread.ReportThread(self.hdl_files_list, self.worker)
         self.generate_report_thread.progress.connect(self.set_progress)
         self.generate_report_thread.start()
 
