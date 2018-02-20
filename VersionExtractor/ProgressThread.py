@@ -16,7 +16,7 @@ class MyThread(QThread):
 
     def run(self):
         print("hello,new thread")
-        print(self.hdl_file_list)
+        # print(self.hdl_file_list)
         self.worker.generate_report(self.hdl_file_list)
         self.progress.emit(100)
 

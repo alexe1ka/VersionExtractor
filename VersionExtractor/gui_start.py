@@ -5,6 +5,7 @@ from PyQt5.QtCore import pyqtSlot
 from PyQt5.QtGui import QStandardItem
 from PyQt5.QtGui import QStandardItemModel
 from PyQt5.QtWidgets import *
+from PyQt5.QtCore import QThread
 import ProgressThread
 
 import VersionExtractorMainWindow
@@ -79,16 +80,18 @@ class ExtractorWindow(QMainWindow, QTreeView):
 
     def click_on_dir(self, signal):
         self.file_path = self.ui.catalogTreeView.model().filePath(signal)
-
-        self.files = [f for f in os.listdir(self.file_path) if
-                      os.path.isfile(os.path.join(self.file_path, f))]  # список файлов в file_path
-
-        list_model = QStandardItemModel()
-        # TODO если диск пустой - вылетает
-        for f in self.files:
-            item = QStandardItem(f)
-            list_model.appendRow(item)
-        self.ui.currentCatalogFilesList.setModel(list_model)
+        try:
+            self.files = [f for f in os.listdir(self.file_path) if
+                          os.path.isfile(os.path.join(self.file_path, f))]  # список файлов в file_path
+            list_model = QStandardItemModel()
+            # TODO если диск пустой - вылетает
+            for f in self.files:
+                item = QStandardItem(f)
+                list_model.appendRow(item)
+            self.ui.currentCatalogFilesList.setModel(list_model)
+        except PermissionError:
+            QMessageBox.warning(None, 'Warning', 'Please input disk in disk drive')
+            quit()
 
     def set_progress(self, value):
         self.firstStep = value  # делаем какиенить действия
