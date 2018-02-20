@@ -91,7 +91,7 @@ class ExtractorWindow(QMainWindow, QTreeView):
             self.ui.currentCatalogFilesList.setModel(list_model)
         except PermissionError:
             QMessageBox.warning(None, 'Warning', 'Please input disk in disk drive')
-            quit()
+            
 
     def set_progress(self, value):
         self.firstStep = value  # делаем какиенить действия
