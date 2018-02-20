@@ -3,7 +3,7 @@ import fnmatch
 import chardet
 from PyQt5.QtCore import pyqtSlot, QObject, QThread
 import datetime
-import ProgressThread
+import GenerateReportAndProgressThread
 
 
 # декодирует строку исходя из определенной кодировки
@@ -13,7 +13,8 @@ def universal_decoder(line):
     if chardet.detect(line)['encoding'] == 'windows-1251':
         return line.decode("windows-1251", errors="ignore")
     if chardet.detect(line)['encoding'] == 'MacCyrillic':
-        return line.decode("MacCyrillic", errors="ignore")
+        # return line.decode("MacCyrillic", errors="ignore")
+        return line.decode("windows-1251", errors="ignore")
     if chardet.detect(line)['encoding'] == 'utf-8':
         return line.decode("utf-8", "ignore")
     return ""
@@ -162,7 +163,7 @@ class HdlWorker(QObject):
         report_file.write("""
         <script>
             function sortTable(n) {
-                  var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
+                  var table, rows, switching, i, x, y, shouldSwitch, dir, switch_count = 0;
                   table = document.getElementById("reportTable");
                   switching = true;
                   dir = "asc"; 
@@ -188,9 +189,9 @@ class HdlWorker(QObject):
                     if (shouldSwitch) {
                       rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
                       switching = true;
-                      switchcount ++;      
+                      switch_count ++;      
                     } else {
-                      if (switchcount == 0 && dir == "asc") {
+                      if (switch_count == 0 && dir == "asc") {
                         dir = "desc";
                         switching = true;
                       }
@@ -216,5 +217,5 @@ if __name__ == "__main__":
     file_list = tasker.find(test_dir_path, ["*.v", "*.vhd"])
     # print(file_list)
 
-    thread1 = ProgressThread.MyThread(1, file_list, tasker)
+    thread1 = GenerateReportAndProgressThread.ReportThread(1, file_list, tasker)
     thread1.start()

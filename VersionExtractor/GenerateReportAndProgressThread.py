@@ -2,7 +2,7 @@ from PyQt5.QtCore import QThread, pyqtSignal
 from catalog_parser import HdlWorker
 
 
-class MyThread(QThread):
+class ReportThread(QThread):
     progress = pyqtSignal(int)  # сигнал который мы будем передавать прогрессбару
     hdl_file_list = []
     worker = HdlWorker()

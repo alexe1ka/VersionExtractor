@@ -6,7 +6,7 @@ from PyQt5.QtGui import QStandardItem
 from PyQt5.QtGui import QStandardItemModel
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import QThread
-import ProgressThread
+import GenerateReportAndProgressThread
 
 import VersionExtractorMainWindow
 from catalog_parser import HdlWorker
@@ -62,8 +62,10 @@ class ExtractorWindow(QMainWindow, QTreeView):
             extension = ["*.c", "*.cpp", "*.h", "*.hpp"]
         elif pattern == ["*.s/*.asm"]:
             extension = ["*.s", "*.asm"]
+
         self.hdl_files_list = self.worker.find(self.file_path, extension)
         hdl_list_model = QStandardItemModel()
+
         for f in self.hdl_files_list:
             item = QStandardItem(f)
             hdl_list_model.appendRow(item)
@@ -74,9 +76,9 @@ class ExtractorWindow(QMainWindow, QTreeView):
     def generate_report_button_click(self):
         self.ui.progressBar.setMaximum(0)
         self.ui.progressBar.setMinimum(0)
-        self.thread1 = ProgressThread.MyThread(1, self.hdl_files_list, self.worker)
-        self.thread1.progress.connect(self.set_progress)
-        self.thread1.start()
+        self.generate_report_thread = GenerateReportAndProgressThread.ReportThread(1, self.hdl_files_list, self.worker)
+        self.generate_report_thread.progress.connect(self.set_progress)
+        self.generate_report_thread.start()
 
     def click_on_dir(self, signal):
         self.file_path = self.ui.catalogTreeView.model().filePath(signal)
@@ -91,7 +93,6 @@ class ExtractorWindow(QMainWindow, QTreeView):
             self.ui.currentCatalogFilesList.setModel(list_model)
         except PermissionError:
             QMessageBox.warning(None, 'Warning', 'Please input disk in disk drive')
-            
 
     def set_progress(self, value):
         self.firstStep = value  # делаем какиенить действия
