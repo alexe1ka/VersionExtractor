@@ -78,8 +78,6 @@ class ExtractorWindow(QMainWindow, QTreeView):
         self.ui.generateReportButton.setEnabled(False)
         self.ui.progressBar.setMaximum(0)
         self.ui.progressBar.setMinimum(0)
-        # print("worker path in generate report function before start new thread: ")
-        # print(self.worker.path)
         self.generate_report_thread = GenerateReportThread.ReportThread(self.hdl_files_list, self.worker)
         self.generate_report_thread.progress.connect(self.set_progress)
         self.generate_report_thread.start()
