@@ -83,6 +83,7 @@ class HdlWorker(QObject):
         self.time = self.now.strftime("%d_%m_%Y_%H-%M")
         report_filename = "report_" + str(self.time) + ".html"
         self.time = self.now.strftime("%d:%m:%Y, %H:%M")
+
         report_file = open(str(report_filename), 'a+', errors="ignore")
 
         # пишет таблицу с зебромодом

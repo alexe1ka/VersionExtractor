@@ -6,6 +6,7 @@ from PyQt5.QtGui import QStandardItem
 from PyQt5.QtGui import QStandardItemModel
 from PyQt5.QtWidgets import *
 import GenerateReportAndProgressThread
+import FinderThread
 
 import VersionExtractorMainWindow
 from catalog_parser import HdlWorker
@@ -62,21 +63,21 @@ class ExtractorWindow(QMainWindow, QTreeView):
         elif pattern == ["*.s/*.asm"]:
             extension = ["*.s", "*.asm"]
 
-        self.hdl_files_list = self.worker.find(self.file_path, extension)
-        hdl_list_model = QStandardItemModel()
-
-        for f in self.hdl_files_list:
-            item = QStandardItem(f)
-            hdl_list_model.appendRow(item)
-        self.ui.foundHdlFilesListView.setModel(hdl_list_model)
-        self.ui.count_files_label.setText("Found " + str(len(self.hdl_files_list)) + " files")
+        self.ui.progressBar.setMaximum(0)
+        self.ui.progressBar.setMinimum(0)
+        self.finder_thread = FinderThread.FinderThread(self.worker, self.file_path, extension)
+        self.finder_thread.start()
+        self.finder_thread.progress.connect(self.set_progress)
+        self.finder_thread.dataReady.connect(self.set_data)
+        # self.hdl_files_list = self.worker.find(self.file_path, extension)
+        # self.finder_thread.progress.connect(self.set_progress)
 
     @pyqtSlot()
     def generate_report_button_click(self):
         self.ui.progressBar.setMaximum(0)
         self.ui.progressBar.setMinimum(0)
-        print("worker path in generate report function before start new thread: ")
-        print(self.worker.path)
+        # print("worker path in generate report function before start new thread: ")
+        # print(self.worker.path)
         self.generate_report_thread = GenerateReportAndProgressThread.ReportThread(self.hdl_files_list, self.worker)
         self.generate_report_thread.progress.connect(self.set_progress)
         self.generate_report_thread.start()
@@ -94,6 +95,16 @@ class ExtractorWindow(QMainWindow, QTreeView):
             self.ui.currentCatalogFilesList.setModel(list_model)
         except PermissionError:
             QMessageBox.warning(None, 'Warning', 'Please input disk in disk drive')
+
+    def set_data(self, value):
+        self.hdl_files_list = value
+        hdl_list_model = QStandardItemModel()
+        for f in self.hdl_files_list:
+            item = QStandardItem(f)
+            hdl_list_model.appendRow(item)
+        self.ui.foundHdlFilesListView.setModel(hdl_list_model)
+        self.ui.count_files_label.setText("Found " + str(len(self.hdl_files_list)) + " files")
+        print(self.hdl_files_list)
 
     def set_progress(self, value):
         self.firstStep = value  # делаем какиенить действия
